@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 from typing import Dict, Any
 
-
+# responsible for storing and  loading the data in the ml application and dashboard/ UI application
 
 class DataManager:
     """
