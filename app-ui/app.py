@@ -24,8 +24,11 @@ config_path = project_root / 'config' / 'config.yaml'
 config = read_config(config_path)
 
 # Override host for Docker environment if environment variable is set
+# http host
 inference_api_host = os.environ.get('INFERENCE_API_HOST', config.get('inference_api', {}).get('host', 'localhost'))
+# inference api port
 inference_api_port = config.get('inference_api', {}).get('port', 5001)
+# inference api endpoint
 inference_api_endpoint = config.get('inference_api', {}).get('endpoint', '/run-inference')
 INFERENCE_API_URL = f"http://{inference_api_host}:{inference_api_port}{inference_api_endpoint}"
 
@@ -208,6 +211,7 @@ def trigger_inference(n_clicks):
     try:
         # Disable button during inference
         # Call the inference API in the other container
+        # make POST request using the URL
         response = requests.post(INFERENCE_API_URL)
         if response.status_code == 200:
             result = response.json()
@@ -219,7 +223,6 @@ def trigger_inference(n_clicks):
             return f"Error: {response.text}", False, 0
     except Exception as e:
         return f"Error: {str(e)}", False, 0
-
 
 server = app.server
 
