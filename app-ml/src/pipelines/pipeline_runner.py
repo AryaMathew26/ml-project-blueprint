@@ -124,7 +124,8 @@ class PipelineRunner:
             new_data=current_real_time_data
         )
 
-        # Step 3: Get the last N rows as the latest batch
+        # Step 3: Get the last N rows as the latest batch from the production database
+        # required to build lag features
         df = self.data_manager.get_n_last_points(
             data=self.current_database_data,
             n=self.config['pipeline_runner']['batch_size']
@@ -139,10 +140,13 @@ class PipelineRunner:
 
         # Step 6: Postprocessing and saving the prediction
         df_pred = self.postprocessing_pipeline.run_inference(
-            y_pred=y_pred,
-            current_timestamp=current_timestamp
+            y_pred=y_pred, # last prediction
+            current_timestamp=current_timestamp # current timestamp
         )
+        # df_pred is a df with columns datetime and prediction, 
+        # where datetime = current_timestamp + 1hr
+        
         # Step 7: Save the prediction and updated database to access in the UI application
-        self.data_manager.save_predictions(df_pred, current_timestamp)
-        self.data_manager.save_data(data=self.current_database_data, path=self.prod_data_path)
+        self.data_manager.save_predictions(df_pred, current_timestamp) # saved to real_time_prediction.parquet file
+        self.data_manager.save_data(data=self.current_database_data, path=self.prod_data_path) # save the appended data to production data file
         return

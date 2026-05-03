@@ -57,6 +57,7 @@ class PreprocessingPipeline:
             pd.DataFrame: Preprocessed DataFrame with renamed columns, dropped columns, and target variable
         """
         df.reset_index(drop=True, inplace=True)
-        df = self.rename_columns(df, self.config['column_mapping'])
+        # column renaming is usually done first
+        df = self.rename_columns(df, self.config['column_mapping']) 
         df = self.drop_columns(df, self.config['drop_columns'])
         return df

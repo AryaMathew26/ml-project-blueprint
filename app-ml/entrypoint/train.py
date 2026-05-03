@@ -13,7 +13,7 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(project_root))
 sys.path.append(str(project_root / 'app-ml' /'src'))
-os.chdir(project_root) # Change directory to read the files from ./data folder
+os.chdir(project_root) # Change directory to root directory, to read the files from ./data folder
 
 
 from common.utils import read_config
@@ -24,6 +24,7 @@ from common.data_manager import DataManager
 if __name__ == "__main__":
 
     # Load config file
+    # to avoid any hardcoding
     config_path = project_root / 'config' / 'config.yaml'
     config = read_config(config_path)
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     data_manager = DataManager(config)
     data_manager.initialize_prod_database()
 
-    # Initialize Pipeline Runner
+    # Initialize Pipeline Runner/ orchestrator (runs the code sequentially)
     pipeline_runner = PipelineRunner(config=config, data_manager=data_manager)
 
     # Run the training pipeline
